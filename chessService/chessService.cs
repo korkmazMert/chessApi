@@ -4,18 +4,18 @@ using System.Data;
 
 namespace chessApi.services
 {
-    public interface IjobServices
+    public interface IchessService
     {
         public chessModelBase getBoard();
         public int saveBoard(int playerID, JsonContent jsonData);
         //public int loginCheck(string kullaniciAd, string kullaniciSifre);
     }
-    public class jobServices : IjobServices
+    public class chessService : IchessService
     {
         public string constr { get; set; }
         public IConfiguration _configuration;
 
-        public jobServices(IConfiguration configuration)
+        public chessService(IConfiguration configuration)
         {
             _configuration = configuration;
             constr = _configuration["ConnectingStrings:DbConnection"];
@@ -84,7 +84,7 @@ namespace chessApi.services
 
         public chessModelBase getBoard(int playerID)
         {
-            //List<jobModel> jobList = new List<jobModel>();
+           
             chessModel chessModel = new chessModel();
             chessModelBase chessModelBase = new chessModelBase();
 
@@ -133,12 +133,12 @@ namespace chessApi.services
             }
         }
 
-        chessModelBase IjobServices.getBoard()
+        chessModelBase IchessService.getBoard()
         {
             throw new NotImplementedException();
         }
 
-        int IjobServices.saveBoard(int playerID, JsonContent jsonData)
+        int IchessService.saveBoard(int playerID, JsonContent jsonData)
         {
             throw new NotImplementedException();
         }
