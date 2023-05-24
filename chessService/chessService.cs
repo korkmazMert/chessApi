@@ -60,7 +60,7 @@ namespace chessApi.services
             {
                 using (SqlConnection conn = new SqlConnection(constr))
                 {
-                    var cmd = new SqlCommand("saveJob", conn);
+                    var cmd = new SqlCommand("saveBoard", conn);
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@playerID", playerID);
                     cmd.Parameters.AddWithValue("@JsonData", jsonData);
