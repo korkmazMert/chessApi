@@ -3,31 +3,43 @@ using chessApi.services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 
+
 namespace chessApi.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class ChessController : Controller
+    public class ChessController : ControllerBase
     {
-        private IchessService _service;
-        public ChessController(IchessService chessService)
+        private readonly IchessService _service;
+        public ChessController(IchessService chessServices)
         {
-            _service = chessService;
+            _service = chessServices;
         }
         [HttpGet]
         [Route("getBoard")]
-        public chessModelBase getBoard()
+        public chessModelBase getBoard(int playerID)
         {
-            chessModelBase board= new chessModelBase();
-            board = _service.getBoard();
+            chessModelBase board = new chessModelBase();
+            board = _service.getBoard(playerID);
             return board;
         }
         [HttpGet]
         [Route("saveBoard")]
-        public int saveBoard(int playerID, JsonContent jsonData)
+        public int saveBoard(int playerID, string jsonData)
         {
             _service.saveBoard(playerID, jsonData);
             return 1;
         }
+
+
+
+        //[HttpGet]
+        //[Route("testing")]
+        //public int inserttesting(string veri,string veri2)
+        //{
+
+        //    _service.inserttesting(veri,veri2);
+        //    return 1;
+        //}
     }
 }
