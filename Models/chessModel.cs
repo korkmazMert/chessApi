@@ -27,13 +27,12 @@ namespace chessApi.Models
         public int? y { get; set; }
         public bool? canMoveto { get; set; }
         public bool? canCapture { get; set; }
-        public Location moves { get; set; }
-        public Location captures { get; set; }
+        public List<Location> moves { get; set; }
+        public List<Location> captures { get; set; }
         public chessModel()
         {
             captures = new List<Location>();
             moves = new List<Location>();
-
             
         }
 

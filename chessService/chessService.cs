@@ -13,6 +13,8 @@ namespace chessApi.services
     {
         public chessModelBase getBoard(int playerID);
         public int saveBoard(int playerID, string jsonData);
+        public int saveTahta(int playerID, string jsonData);
+        public denemeModelBase getTahta(int playerID);
         //public int loginCheck(string kullaniciAd, string kullaniciSifre);
 
         //public int inserttesting(string veri, string veri2);
@@ -27,6 +29,74 @@ namespace chessApi.services
             _configuration = configuration;
             constr = _configuration["ConnectionStrings:chessDB"];
 
+        }
+
+        public denemeModelBase getTahta(int playerID)
+        {
+            denemeModel tahta = new denemeModel();
+            denemeModelBase tahtaBase= new denemeModelBase();
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(constr))
+                {
+                    conn.Open();
+                    var cmd = new SqlCommand("denemeGet", conn);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@playerId", playerID);
+                    SqlDataReader dr = cmd.ExecuteReader();
+                    if (dr.HasRows)
+                    {
+                        while (dr.Read())
+                        {
+                            tahta.data =  dr[0].ToString();
+                            tahtaBase.denemeModels.Add(tahta);
+
+                        }
+
+                    }
+                    else
+                    {
+                        Console.WriteLine("girdi yok");
+                    }
+
+                    conn.Close();
+                }
+
+                return tahtaBase;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+        }
+        public int saveTahta(int playerID, string data)
+        {
+           // String jsonString = JsonConvert.SerializeObject(jsonData);
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(constr))
+                {
+                    var cmd = new SqlCommand("denemeSave", conn);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@playerID", playerID);
+                    cmd.Parameters.AddWithValue("@veri", data);
+
+
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
+                    conn.Close();
+                    return 1;
+                }
+
+            }
+            catch (Exception)
+            {
+
+                return 0;
+            }
         }
 
         //public int loginCheck(string kullaniciAd, string kullaniciSifre)
@@ -127,6 +197,8 @@ namespace chessApi.services
 
             chessModel chessModel = new chessModel();
             chessModelBase chessModelBase = new chessModelBase();
+            Location moves = new Location();
+            Location captures = new Location();
             try
             {
 
@@ -142,6 +214,7 @@ namespace chessApi.services
                     {
                         while (dr.Read())
                         {
+                            //jsondan deserialize etmem lazım burda
                             chessModel.playerID= Convert.ToInt32(dr["playerId"]);
                             chessModel.pieceName = dr["pieceName"].ToString();
                             chessModel.location = (Location?)dr["locatiion"];
@@ -151,7 +224,11 @@ namespace chessApi.services
                             chessModel.y = Convert.ToInt32(dr["y"]);
                             chessModel.canMoveto = Convert.ToBoolean(dr["canMoveto"]);
                             chessModel.canCapture = Convert.ToBoolean(dr["canCapture"]);
-                            
+                            //moves ve captures alanı
+                            moves = (Location)dr["moves"];
+                            captures = (Location)dr["captures"];
+                            chessModel.captures.Add(captures);
+                            chessModel.moves.Add(moves);
                             //moves ve captures nasıl olacak bilmiyorum
                             chessModelBase.pieceList.Add(chessModel);
 
